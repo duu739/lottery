@@ -43,6 +43,14 @@
         }
         .btn-secondary:hover { background-color: var(--c-beige); color: var(--c-teal-shade); }
 
+        /* ✨ 刪除活動的危險按鈕 ✨ */
+        .btn-danger {
+            background-color: transparent; color: var(--c-red-tint); border: 2px solid var(--c-red-shade); 
+            padding: 10px 20px; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: all 0.3s;
+            font-weight: bold;
+        }
+        .btn-danger:hover { background-color: var(--c-red); color: white; border-color: var(--c-red); box-shadow: 0 0 15px rgba(240, 92, 93, 0.5); }
+
         /* --- 大廳介面 --- */
         #setupScreen {
             display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center;
@@ -60,7 +68,6 @@
         .header-container { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255, 255, 255, 0.1); padding-bottom: 20px; margin-bottom: 30px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         
-        /* 代碼標籤：使用紅色凸顯 */
         .room-badge { background: var(--c-red); color: white; padding: 5px 15px; border-radius: 20px; font-size: 1.2rem; font-weight: bold; margin-left: 15px; vertical-align: middle;}
         
         .status-bar { display: flex; align-items: center; gap: 15px; }
@@ -74,7 +81,7 @@
         #winnerArea h2 { color: var(--c-beige); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 0 10px rgba(234, 210, 182, 0.4); }
         #winnerGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
         
-        /* ✨ 中獎專屬：珊瑚紅發光卡片 ✨ */
+        /* 中獎專屬：珊瑚紅發光卡片 */
         .winner-card { 
             background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%); 
             color: white; 
@@ -113,8 +120,9 @@
                 <h1>🎉 歡樂大抽獎 <span class="room-badge" id="displayRoomCode">代碼: 載入中</span></h1>
             </div>
             <div class="status-bar">
-                <div class="counter">總報名人數<span id="totalCount">0</span></div>
+                <div class="counter">總人數<span id="totalCount">0</span></div>
                 <button class="btn-secondary" onclick="exportToCSV()">下載名單 (CSV)</button>
+                <button class="btn-danger" onclick="deleteRoom()">🗑️ 刪除活動</button>
             </div>
         </div>
 
@@ -180,6 +188,22 @@
             }
         }
 
+        // ✨ 執行刪除房間資料的函數 ✨
+        function deleteRoom() {
+            // 雙重確認，避免手滑
+            if(confirm(`⚠️ 警告！確定要永久刪除活動「${currentRoom}」及所有報名名單嗎？\n\n這將會從資料庫中徹底清除資料且無法復原！`)) {
+                // 呼叫 Firebase 的 remove() 刪除整個 events/代碼 節點
+                db.ref(`events/${currentRoom}`).remove()
+                .then(() => {
+                    alert("✅ 活動及名單已成功刪除！將為您返回大廳。");
+                    window.location.href = window.location.pathname;
+                })
+                .catch((error) => {
+                    alert("❌ 刪除失敗，請檢查權限或網路連線：" + error.message);
+                });
+            }
+        }
+
         function startDashboard(roomCode) {
             currentRoom = roomCode;
             document.getElementById('setupScreen').style.display = 'none';
@@ -188,6 +212,7 @@
 
             const eventRef = db.ref(`events/${currentRoom}/participants`);
 
+            // 這裡原本寫法會一直把舊資料加進陣列，為了讓刪除後不會殘留，我們做個小優化
             eventRef.on("child_added", function(snapshot) {
                 const data = snapshot.val();
                 const name = data.name;
@@ -200,6 +225,15 @@
                 card.innerText = name;
                 cardElements[name] = card; 
                 document.getElementById('nameGrid').appendChild(card);
+            });
+            
+            // 當資料被刪除時，把畫面的名單清空 (可選的安全機制)
+            eventRef.on("child_removed", function(snapshot) {
+                const name = snapshot.val().name;
+                if(cardElements[name]) {
+                    cardElements[name].remove();
+                    delete cardElements[name];
+                }
             });
         }
 
