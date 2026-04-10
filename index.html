@@ -1,122 +1,36 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>歡樂大抽獎 - 活動報名</title>
+    <title>活動報名</title>
     <style>
-        body {
-            font-family: '微軟正黑體', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #ffffff;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .join-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px 30px;
-            width: 85%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-        }
-
-        h2 {
-            color: #e94560;
-            margin-top: 0;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        p.subtitle {
-            color: #a0aab2;
-            margin-bottom: 30px;
-            font-size: 0.95rem;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 15px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #4ecca3;
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        button {
-            width: 100%;
-            background-color: #4ecca3;
-            color: #1a1a2e;
-            border: none;
-            padding: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        button:active {
-            transform: scale(0.96);
-        }
-
-        button:disabled {
-            background-color: #555555;
-            color: #888888;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        #message {
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            min-height: 24px;
-        }
-
-        .success-text {
-            color: #4ecca3;
-        }
-
-        .error-text {
-            color: #ff6b6b;
-        }
+        body { font-family: '微軟正黑體', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #ffffff; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .join-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px 30px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); }
+        h2 { color: #e94560; margin-top: 0; font-size: 1.8rem; margin-bottom: 10px; }
+        p.subtitle { color: #a0aab2; margin-bottom: 20px; font-size: 0.95rem; }
+        input[type="text"] { width: 100%; box-sizing: border-box; padding: 15px; font-size: 1.2rem; border-radius: 10px; border: 2px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); color: #ffffff; margin-bottom: 15px; text-align: center; transition: border-color 0.3s; }
+        input[type="text"]:focus { outline: none; border-color: #4ecca3; background: rgba(255, 255, 255, 0.15); }
+        /* 被鎖定的輸入框樣式 */
+        input:read-only { background: rgba(0, 0, 0, 0.2); border-color: transparent; color: #4ecca3; font-weight: bold; }
+        
+        button { width: 100%; background-color: #4ecca3; color: #1a1a2e; border: none; padding: 15px; font-size: 1.2rem; font-weight: bold; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        button:active { transform: scale(0.96); }
+        button:disabled { background-color: #555555; color: #888888; cursor: not-allowed; transform: none; }
+        #message { margin-top: 20px; font-weight: bold; font-size: 1.1rem; min-height: 24px; }
+        .success-text { color: #4ecca3; } .error-text { color: #ff6b6b; }
     </style>
 </head>
-
 <body>
 
     <div class="join-card">
         <h2>🎉 歡迎參加抽獎</h2>
-        <p class="subtitle">請輸入您的姓名，完成報名後請看大螢幕確認！</p>
-
-        <input type="text" id="nameInput" placeholder="請輸入姓名" autocomplete="off">
+        <p class="subtitle">請確認活動代碼並輸入姓名</p>
+        
+        <input type="text" id="roomCodeInput" placeholder="請輸入活動代碼" autocomplete="off">
+        <input type="text" id="nameInput" placeholder="請輸入您的姓名" autocomplete="off">
+        
         <button id="submitBtn">送出報名</button>
-
         <p id="message"></p>
     </div>
 
@@ -139,26 +53,45 @@
         const db = firebase.database();
 
         const submitBtn = document.getElementById('submitBtn');
+        const roomInput = document.getElementById('roomCodeInput');
         const nameInput = document.getElementById('nameInput');
         const messageEl = document.getElementById('message');
 
-        // 【防護一】網頁載入時，檢查手機是否已有報名紀錄
-        if (localStorage.getItem("hasJoinedLuckyDraw") === "true") {
-            nameInput.style.display = "none";
-            submitBtn.style.display = "none";
-            messageEl.innerText = "✅ 您已經報名成功囉！請看大螢幕。";
-            messageEl.className = "success-text";
+        // --- 處理網址中的代碼 ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let roomFromUrl = urlParams.get('room');
+
+        if (roomFromUrl) {
+            // 如果網址有代碼，自動填入並設為唯讀
+            roomInput.value = roomFromUrl;
+            roomInput.readOnly = true;
+            checkIfAlreadyJoined(roomFromUrl);
+        } else {
+            // 讓使用者自己輸入代碼，當輸入離開時檢查是否報名過
+            roomInput.addEventListener('blur', () => {
+                if(roomInput.value.trim()) checkIfAlreadyJoined(roomInput.value.trim());
+            });
         }
 
-        submitBtn.addEventListener('click', function () {
-            const name = nameInput.value.trim();
+        // 【防護一】檢查這支手機是否「已經在這個代碼的活動中」報名過了
+        function checkIfAlreadyJoined(roomCode) {
+            // 記憶體鑰匙變成 joined_代碼，這樣不同活動不會互相卡住
+            if (localStorage.getItem(`joined_${roomCode}`) === "true") {
+                roomInput.style.display = "none";
+                nameInput.style.display = "none";
+                submitBtn.style.display = "none";
+                messageEl.innerText = "✅ 您已經在此活動報名成功囉！";
+                messageEl.className = "success-text";
+            }
+        }
 
-            if (name === "") {
-                messageEl.innerText = "⚠️ 名字不能是空白的喔！";
+        submitBtn.addEventListener('click', function() {
+            const roomCode = roomInput.value.trim();
+            const name = nameInput.value.trim();
+            
+            if (!roomCode || !name) {
+                messageEl.innerText = "⚠️ 代碼和名字都不能空白喔！";
                 messageEl.className = "error-text";
-                nameInput.style.transform = "translateX(-5px)";
-                setTimeout(() => nameInput.style.transform = "translateX(5px)", 100);
-                setTimeout(() => nameInput.style.transform = "translateX(0)", 200);
                 return;
             }
 
@@ -166,14 +99,15 @@
             submitBtn.innerText = "資料檢查中...";
             messageEl.innerText = "";
 
-            // 【防護二】比對資料庫，確保名字不重複
-            db.ref("participants").once("value").then((snapshot) => {
-                let isDuplicate = false;
+            // ✨✨ 寫入與查詢的路徑改成 events/{roomCode}/participants ✨✨
+            const eventRef = db.ref(`events/${roomCode}/participants`);
 
+            // 【防護二】檢查同一個活動裡有沒有重複的名字
+            eventRef.once("value").then((snapshot) => {
+                let isDuplicate = false;
+                
                 snapshot.forEach((childSnapshot) => {
-                    if (childSnapshot.val().name === name) {
-                        isDuplicate = true;
-                    }
+                    if (childSnapshot.val().name === name) isDuplicate = true;
                 });
 
                 if (isDuplicate) {
@@ -182,18 +116,18 @@
                     submitBtn.disabled = false;
                     submitBtn.innerText = "重新送出";
                 } else {
-                    // 確定不重複，寫入資料
-                    db.ref("participants").push({
+                    eventRef.push({
                         name: name,
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     }).then(() => {
                         messageEl.innerText = "✅ 報名成功！請看大螢幕！";
                         messageEl.className = "success-text";
-                        nameInput.style.display = "none";
-                        submitBtn.style.display = "none";
-
-                        // 寫入手機記憶體
-                        localStorage.setItem("hasJoinedLuckyDraw", "true");
+                        roomInput.style.display = "none";
+                        nameInput.style.display = "none"; 
+                        submitBtn.style.display = "none"; 
+                        
+                        // 針對「這個活動」寫入防重複記憶
+                        localStorage.setItem(`joined_${roomCode}`, "true");
                     }).catch((error) => {
                         messageEl.innerText = "❌ 發生錯誤，請稍後再試";
                         messageEl.className = "error-text";
@@ -204,14 +138,9 @@
             });
         });
 
-        // 支援 Enter 鍵送出
-        nameInput.addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                submitBtn.click();
-            }
+        nameInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") { event.preventDefault(); submitBtn.click(); }
         });
     </script>
 </body>
-
 </html>
