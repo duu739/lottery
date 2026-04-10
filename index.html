@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動報名</title>
+</head>
+
+<body>
+    <h2>輸入姓名參加抽獎</h2>
+    <input type="text" id="nameInput" placeholder="請輸入您的姓名">
+    <button id="submitBtn">送出報名</button>
+    <p id="message"></p>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // ⚠️ 請把下面這段替換成你在第一階段取得的 firebaseConfig
+        const firebaseConfig = {
+            apiKey: "AIzaSyAFDgexiZg7b3V99OKD8kMN-AX0VnE3Zbk",
+            authDomain: "lottery-cd2d6.firebaseapp.com",
+            databaseURL: "https://lottery-cd2d6-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "lottery-cd2d6",
+            storageBucket: "lottery-cd2d6.firebasestorage.app",
+            messagingSenderId: "424550291907",
+            appId: "1:424550291907:web:d53de4e7b528a0d3d80576"
+        };
+
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 設定按鈕點擊事件
+        document.getElementById('submitBtn').addEventListener('click', function () {
+            const name = document.getElementById('nameInput').value;
+            if (name.trim() === "") {
+                alert("名字不能是空白的喔！");
+                return;
+            }
+
+            // 將名字推送到資料庫的 "participants" 節點下
+            db.ref("participants").push({
+                name: name
+            }).then(() => {
+                document.getElementById('message').innerText = "報名成功！請看大螢幕！";
+                document.getElementById('nameInput').value = ""; // 清空輸入框
+                document.getElementById('submitBtn').disabled = true; // 防止連按
+            });
+        });
+    </script>
+</body>
+
+</html>
