@@ -1,21 +1,121 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
 <head>
     <meta charset="UTF-8">
-    <title>抽獎大螢幕</title>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動主控台</title>
+    <style>
+        body {
+            font-family: '微軟正黑體', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #ffffff;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+        }
 
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: #e94560;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .counter {
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .counter span {
+            color: #0f3460;
+            background: #4ecca3;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        button.export-btn {
+            background-color: #0f3460;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button.export-btn:hover {
+            background-color: #e94560;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+            transform: translateY(-2px);
+        }
+
+        #nameGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .name-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
 <body>
-    <h1>活動主控台</h1>
-    <h2>目前報名名單：</h2>
-    <ul id="nameList"></ul>
+
+    <div class="header-container">
+        <h1>🎉 歡樂大抽獎 - 報名名單</h1>
+        <div class="status-bar">
+            <div class="counter">目前報名人數<span id="totalCount">0</span></div>
+            <button class="export-btn" onclick="exportToCSV()">下載報名名單 (CSV)</button>
+        </div>
+    </div>
+
+    <div id="nameGrid"></div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // ⚠️ 一樣，把這裡替換成你的 firebaseConfig
+        // ⚠️⚠️⚠️ 請在此替換成你的 firebaseConfig ⚠️⚠️⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyAFDgexiZg7b3V99OKD8kMN-AX0VnE3Zbk",
             authDomain: "lottery-cd2d6.firebaseapp.com",
@@ -29,17 +129,48 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const nameList = document.getElementById('nameList');
+        const nameGrid = document.getElementById('nameGrid');
+        const totalCountEl = document.getElementById('totalCount');
+        
+        let participantsData = [];
 
-        // 監聽 "participants" 節點，如果有新增資料，就觸發這個函數
-        db.ref("participants").on("child_added", function (snapshot) {
+        // 監聽資料庫，即時渲染畫面
+        db.ref("participants").on("child_added", function(snapshot) {
             const data = snapshot.val();
-            // 建立一個 <li> 標籤，把名字放進去，並加到畫面上
-            const li = document.createElement("li");
-            li.innerText = data.name;
-            nameList.appendChild(li);
+            const name = data.name;
+
+            participantsData.push(name);
+            totalCountEl.innerText = participantsData.length;
+
+            const card = document.createElement("div");
+            card.className = "name-card";
+            card.innerText = name;
+            nameGrid.appendChild(card);
         });
+
+        // 匯出 CSV 功能
+        function exportToCSV() {
+            if (participantsData.length === 0) {
+                alert("目前還沒有人報名喔！");
+                return;
+            }
+
+            // \uFEFF 是 BOM，確保 Excel 開啟中文不亂碼
+            let csvContent = "\uFEFF報名序號,姓名\n"; 
+            
+            participantsData.forEach((name, index) => {
+                csvContent += `${index + 1},${name}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "報名名單.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 </body>
-
 </html>
