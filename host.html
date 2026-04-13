@@ -71,6 +71,25 @@
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
 
+        #slotCountLabel {
+            margin-bottom: 15px; font-size: 1.5rem; color: var(--c-beige); font-weight: bold;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        /* 👑 新增：上方保留中獎者的展示區 */
+        #slotCurrentWinners {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
+            margin-bottom: 30px; min-height: 70px; max-width: 90%;
+        }
+        
+        /* 縮小版的中獎卡片，疊在老虎機上方 */
+        .slot-mini-winner {
+            background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%);
+            color: white; padding: 10px 25px; font-size: 1.8rem; font-weight: bold;
+            border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.4), 0 0 15px var(--c-red-shade);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
         .slot-machine-container {
             background: rgba(255, 255, 255, 0.03); padding: 30px; border-radius: 20px;
             border: 2px solid var(--c-blue); box-shadow: 0 15px 40px rgba(0,0,0,0.6);
@@ -91,34 +110,28 @@
             white-space: nowrap;
         }
 
-        /* 移除模糊，改為清晰但帶有微弱跳動的動畫 (0.2秒節奏) */
-        .spinning-text { 
-            animation: tickFlip 0.2s infinite ease-in-out; 
-        }
+        .spinning-text { animation: tickFlip 0.2s infinite ease-in-out; }
         @keyframes tickFlip { 
             0% { transform: translateY(2px) scale(0.98); color: var(--c-blue); opacity: 0.8; } 
             50% { transform: translateY(-2px) scale(1.02); color: var(--c-beige); opacity: 1; } 
             100% { transform: translateY(2px) scale(0.98); color: var(--c-blue); opacity: 0.8; } 
         }
 
-        /* 中獎定格時的爆紅放大特效 */
         .winner-pop {
-            color: var(--c-red) !important;
-            text-shadow: 0 0 30px var(--c-red-shade) !important;
+            color: var(--c-red) !important; text-shadow: 0 0 30px var(--c-red-shade) !important;
             animation: popScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes popScale { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1.2); opacity: 1; } }
+        @keyframes popIn { 0% { opacity: 0; transform: translateY(20px) scale(0.8); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
-        #slotCountLabel {
-            margin-bottom: 20px; font-size: 1.5rem; color: var(--c-beige); font-weight: bold;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
     </style>
 </head>
 <body>
 
     <div id="slotOverlay">
         <div id="slotCountLabel">幸運輪盤載入中...</div>
+        <div id="slotCurrentWinners"></div>
+        
         <div class="slot-machine-container">
             <div class="slot-window">
                 <div id="slotName">???</div>
@@ -183,6 +196,7 @@
             messagingSenderId: "424550291907",
             appId: "1:424550291907:web:d53de4e7b528a0d3d80576"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -191,7 +205,6 @@
         let drawnWinners = [];     
         let cardElements = {};   
         
-        // ✨ 全域變數：紀錄動畫輪播到名單的哪個人了，確保不會每次都從頭滾
         let animationDisplayIndex = 0;  
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -249,7 +262,6 @@
             if (eligiblePool.length === 0) return alert("所有人都已經被抽中過囉！");
             if (drawCount > eligiblePool.length) return alert(`目前只剩下 ${eligiblePool.length} 人符合資格！`);
 
-            // 複製一份作為畫面上輪播用 (包含尚未被抽走的人)
             const displayPool = [...eligiblePool];
 
             let currentWinners = [];
@@ -268,19 +280,23 @@
             const slotName = document.getElementById('slotName');
             const label = document.getElementById('slotCountLabel');
             const drawBtn = document.getElementById('drawBtn');
+            const currentWinnersContainer = document.getElementById('slotCurrentWinners');
 
             drawBtn.disabled = true;
             overlay.style.display = 'flex';
+            currentWinnersContainer.innerHTML = ''; // 清空上一次動畫的保留區
 
             let currentWinnerIndex = 0;
 
             function spinForOneWinner() {
                 if (currentWinnerIndex >= winnersList.length) {
+                    label.innerText = `🎉 恭喜以上幸運兒！`; // 全部抽完改標題
+                    // 抽完最後一個，畫面多停留 2.5 秒，讓大家看完所有卡片再收合
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         updateMainUI(winnersList);
                         drawBtn.disabled = false;
-                    }, 1500);
+                    }, 2500);
                     return;
                 }
 
@@ -291,32 +307,43 @@
                 }
 
                 slotName.className = 'spinning-text';
+                slotName.innerText = "???"; // 視窗先歸零一下，視覺效果比較好
                 
                 let spinCount = 0;
-                const maxSpins = 25; // 轉 5 秒 (25次 * 0.2秒)
+                const maxSpins = 25; 
 
-                // 🌟 改為每 200 毫秒 (0.2秒) 切換一次，且按順序接續顯示
                 let spinInterval = setInterval(() => {
                     const currentShowName = displayPool[animationDisplayIndex % displayPool.length];
                     slotName.innerText = currentShowName;
                     
-                    // 索引加一，下一次輪播就會接續下一個人
                     animationDisplayIndex++;
                     spinCount++;
 
-                    // 達到 5 秒後停止
                     if (spinCount >= maxSpins) {
                         clearInterval(spinInterval); 
                         
+                        // 中獎爆紅特效
                         slotName.className = 'winner-pop';
                         slotName.innerText = winnersList[currentWinnerIndex]; 
 
+                        // 讓紅色大字停留 1.5 秒讓大家歡呼
                         setTimeout(() => {
+                            // ✨ 把這個中獎人複製一張小卡，推上去保留區 ✨
+                            const miniCard = document.createElement("div");
+                            miniCard.className = "slot-mini-winner";
+                            miniCard.innerText = winnersList[currentWinnerIndex];
+                            currentWinnersContainer.appendChild(miniCard);
+                            
                             currentWinnerIndex++;
-                            spinForOneWinner();
+                            
+                            // 稍微停頓 0.5 秒再接續抽下一個，節奏比較不會太趕
+                            setTimeout(() => {
+                                spinForOneWinner();
+                            }, 500);
+                            
                         }, 1500);
                     }
-                }, 200); // <-- 0.2 秒的清晰節奏
+                }, 200); 
             }
 
             spinForOneWinner();
