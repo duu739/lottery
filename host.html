@@ -28,48 +28,22 @@
 
         h1 { margin: 0; font-size: 2.5rem; color: var(--c-beige); text-shadow: 0 0 10px rgba(234, 210, 182, 0.3); }
         
-        /* 開始抽獎的主要按鈕：米色底，深綠字 */
-        .btn-primary {
-            background-color: var(--c-beige); color: var(--c-teal-shade); border: none; padding: 15px 40px;
-            font-size: 1.5rem; border-radius: 10px; cursor: pointer; font-weight: bold;
-            box-shadow: 0 0 15px rgba(234, 210, 182, 0.4); transition: all 0.2s;
-        }
+        .btn-primary { background-color: var(--c-beige); color: var(--c-teal-shade); border: none; padding: 15px 40px; font-size: 1.5rem; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(234, 210, 182, 0.4); transition: all 0.2s; }
         .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(234, 210, 182, 0.8); }
-        
-        /* 次要按鈕：鋼藍色底，白字 */
-        .btn-secondary {
-            background-color: var(--c-blue); color: white; border: none; padding: 10px 20px;
-            font-size: 1rem; border-radius: 8px; cursor: pointer; transition: all 0.3s;
-        }
+        .btn-secondary { background-color: var(--c-blue); color: white; border: none; padding: 10px 20px; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
         .btn-secondary:hover { background-color: var(--c-beige); color: var(--c-teal-shade); }
-
-        /* ✨ 刪除活動的危險按鈕 ✨ */
-        .btn-danger {
-            background-color: transparent; color: var(--c-red-tint); border: 2px solid var(--c-red-shade); 
-            padding: 10px 20px; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: all 0.3s;
-            font-weight: bold;
-        }
+        .btn-danger { background-color: transparent; color: var(--c-red-tint); border: 2px solid var(--c-red-shade); padding: 10px 20px; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-weight: bold; }
         .btn-danger:hover { background-color: var(--c-red); color: white; border-color: var(--c-red); box-shadow: 0 0 15px rgba(240, 92, 93, 0.5); }
 
-        /* --- 大廳介面 --- */
-        #setupScreen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center;
-        }
-        .setup-card {
-            background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(234, 210, 182, 0.2);
-        }
-        .setup-card input {
-            font-size: 2rem; padding: 10px; text-align: center; width: 200px; margin: 20px 0;
-            border-radius: 10px; border: 2px solid var(--c-blue); background: rgba(0,0,0,0.3); color: white;
-        }
+        /* --- 基礎介面 --- */
+        #setupScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; }
+        .setup-card { background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(234, 210, 182, 0.2); }
+        .setup-card input { font-size: 2rem; padding: 10px; text-align: center; width: 200px; margin: 20px 0; border-radius: 10px; border: 2px solid var(--c-blue); background: rgba(0,0,0,0.3); color: white; }
 
-        /* --- 抽獎儀表板 --- */
         #dashboardScreen { display: none; }
         .header-container { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255, 255, 255, 0.1); padding-bottom: 20px; margin-bottom: 30px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
-        
-        .room-badge { background: var(--c-red); color: white; padding: 5px 15px; border-radius: 20px; font-size: 1.2rem; font-weight: bold; margin-left: 15px; vertical-align: middle;}
-        
+        .room-badge { background: var(--c-red); color: white; padding: 5px 15px; border-radius: 20px; font-size: 1.2rem; font-weight: bold; margin-left: 15px; }
         .status-bar { display: flex; align-items: center; gap: 15px; }
         .counter { font-size: 1.2rem; background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 30px; }
         .counter span { color: var(--c-teal-shade); background: var(--c-beige); padding: 2px 12px; border-radius: 20px; font-weight: bold; margin-left: 10px; }
@@ -80,25 +54,78 @@
         #winnerArea { min-height: 150px; margin-bottom: 40px; text-align: center; display: none; }
         #winnerArea h2 { color: var(--c-beige); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 0 10px rgba(234, 210, 182, 0.4); }
         #winnerGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .winner-card { background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%); color: white; padding: 20px 40px; font-size: 2.5rem; font-weight: bold; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 25px var(--c-red-shade); animation: zoomIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         
-        /* 中獎專屬：珊瑚紅發光卡片 */
-        .winner-card { 
-            background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%); 
-            color: white; 
-            padding: 20px 40px; font-size: 2.5rem; font-weight: bold; border-radius: 15px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 25px var(--c-red-shade); 
-            animation: zoomIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
-        }
-        @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.1) translateY(-50px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-
         .section-title { border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 20px; color: var(--c-blue); }
         #nameGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .name-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(234, 210, 182, 0.2); border-radius: 8px; padding: 15px; text-align: center; font-size: 1.2rem; animation: popIn 0.5s ease forwards; opacity: 0; }
+        .name-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(234, 210, 182, 0.2); border-radius: 8px; padding: 15px; text-align: center; font-size: 1.2rem; transition: opacity 0.5s; }
         .name-card.drawn { opacity: 0.2; filter: grayscale(100%); }
-        @keyframes popIn { to { opacity: 1; } }
+
+        @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.1) translateY(-50px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* ✨✨✨ 抽獎機過場動畫特效區 ✨✨✨ */
+        #lotteryOverlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(15, 52, 96, 0.95); /* 深藍綠色背景 */
+            backdrop-filter: blur(5px); z-index: 9999;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* 模擬八角形的抽獎箱 */
+        .cage-container { position: relative; width: 250px; height: 250px; margin-bottom: 60px; }
+        .cage {
+            width: 100%; height: 100%; border: 12px solid var(--c-beige);
+            border-radius: 20px; /* 稍微圓角的方框模擬立體感 */
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 0 30px rgba(234, 210, 182, 0.3);
+            position: relative; overflow: hidden;
+        }
+        
+        /* 抽獎箱內部的十字線條 */
+        .cage::before, .cage::after { content: ''; position: absolute; background: var(--c-beige); opacity: 0.5; }
+        .cage::before { width: 4px; height: 100%; }
+        .cage::after { height: 4px; width: 100%; }
+
+        /* 旋轉動畫 */
+        .spinning .cage { animation: spinCage 0.4s linear infinite; }
+        @keyframes spinCage { 100% { transform: rotate(360deg); } }
+
+        /* 掉出來的球與軌道 */
+        .ball-track { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 80%; min-height: 80px; }
+        
+        .lottery-ball {
+            width: 60px; height: 60px; background: radial-gradient(circle at 30% 30%, #fff, var(--c-beige) 60%);
+            border-radius: 50%; box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: transparent; cursor: default;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: dropBall 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0; transform: translateY(-80px);
+        }
+
+        /* 球體掉落 */
+        @keyframes dropBall { to { opacity: 1; transform: translateY(0); } }
+
+        /* 球體爆開變成名字卡片 */
+        .lottery-ball.open {
+            width: auto; min-width: 180px; height: 70px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%);
+            color: white; padding: 0 25px; font-size: 2rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 25px var(--c-red-shade);
+        }
     </style>
 </head>
 <body>
+
+    <div id="lotteryOverlay">
+        <h2 style="color: var(--c-beige); font-size: 2rem; margin-bottom: 30px;">幸運之輪轉動中...</h2>
+        <div class="cage-container" id="cageMachine">
+            <div class="cage"></div>
+        </div>
+        <div class="ball-track" id="ballTrack">
+            </div>
+    </div>
 
     <div id="setupScreen">
         <div class="setup-card">
@@ -176,30 +203,13 @@
             if(!roomCode) return alert("請輸入活動代碼！");
             window.location.href = `?room=${roomCode}`;
         }
+        function generateRandomRoom() { window.location.href = `?room=${Math.floor(100000 + Math.random() * 900000)}`; }
+        function returnToLobby() { if(confirm("確定返回大廳嗎？")) window.location.href = window.location.pathname; }
 
-        function generateRandomRoom() {
-            const randomCode = Math.floor(100000 + Math.random() * 900000); 
-            window.location.href = `?room=${randomCode}`;
-        }
-
-        function returnToLobby() {
-            if(confirm("確定要離開目前活動返回大廳嗎？\n(資料庫中的報名紀錄不會被刪除)")) {
-                window.location.href = window.location.pathname;
-            }
-        }
-
-        // ✨ 執行刪除房間資料的函數 ✨
         function deleteRoom() {
-            // 雙重確認，避免手滑
-            if(confirm(`⚠️ 警告！確定要永久刪除活動「${currentRoom}」及所有報名名單嗎？\n\n這將會從資料庫中徹底清除資料且無法復原！`)) {
-                // 呼叫 Firebase 的 remove() 刪除整個 events/代碼 節點
-                db.ref(`events/${currentRoom}`).remove()
-                .then(() => {
-                    alert("✅ 活動及名單已成功刪除！將為您返回大廳。");
-                    window.location.href = window.location.pathname;
-                })
-                .catch((error) => {
-                    alert("❌ 刪除失敗，請檢查權限或網路連線：" + error.message);
+            if(confirm(`⚠️ 確定要永久刪除活動「${currentRoom}」及所有名單嗎？\n資料將無法復原！`)) {
+                db.ref(`events/${currentRoom}`).remove().then(() => {
+                    alert("✅ 活動已成功刪除！"); window.location.href = window.location.pathname;
                 });
             }
         }
@@ -212,11 +222,8 @@
 
             const eventRef = db.ref(`events/${currentRoom}/participants`);
 
-            // 這裡原本寫法會一直把舊資料加進陣列，為了讓刪除後不會殘留，我們做個小優化
             eventRef.on("child_added", function(snapshot) {
-                const data = snapshot.val();
-                const name = data.name;
-
+                const name = snapshot.val().name;
                 participantsData.push(name);
                 document.getElementById('totalCount').innerText = participantsData.length;
 
@@ -227,16 +234,13 @@
                 document.getElementById('nameGrid').appendChild(card);
             });
             
-            // 當資料被刪除時，把畫面的名單清空 (可選的安全機制)
             eventRef.on("child_removed", function(snapshot) {
                 const name = snapshot.val().name;
-                if(cardElements[name]) {
-                    cardElements[name].remove();
-                    delete cardElements[name];
-                }
+                if(cardElements[name]) { cardElements[name].remove(); delete cardElements[name]; }
             });
         }
 
+        // --- 動畫與抽獎核心邏輯 ---
         document.getElementById('drawBtn').addEventListener('click', function() {
             const drawCount = parseInt(document.getElementById('drawCount').value);
             const eligiblePool = participantsData.filter(name => !drawnWinners.includes(name));
@@ -244,23 +248,91 @@
             if (eligiblePool.length === 0) return alert("所有人都已經被抽中過囉！");
             if (drawCount > eligiblePool.length) return alert(`目前只剩下 ${eligiblePool.length} 人符合資格！`);
 
+            // 1. 決定中獎名單
+            let currentWinners = [];
+            for (let i = 0; i < drawCount; i++) {
+                const randomIndex = Math.floor(Math.random() * eligiblePool.length);
+                const winnerName = eligiblePool.splice(randomIndex, 1)[0];
+                currentWinners.push(winnerName);
+                drawnWinners.push(winnerName);
+            }
+
+            // 2. 啟動抽獎機動畫
+            playLotteryAnimation(currentWinners);
+        });
+
+        // 處理動畫序列的函數
+        function playLotteryAnimation(winnersList) {
+            const overlay = document.getElementById('lotteryOverlay');
+            const machine = document.getElementById('cageMachine');
+            const track = document.getElementById('ballTrack');
+            const drawBtn = document.getElementById('drawBtn');
+
+            // 鎖定按鈕避免重複點擊
+            drawBtn.disabled = true;
+            
+            // 顯示過場動畫，並清空軌道
+            overlay.style.display = 'flex';
+            track.innerHTML = ''; 
+            
+            // 讓箱子開始狂轉
+            machine.classList.add('spinning');
+
+            // 旋轉 3 秒後停止，開始掉球
+            setTimeout(() => {
+                machine.classList.remove('spinning');
+                dropAndRevealSequence(winnersList, 0, overlay, drawBtn);
+            }, 3000);
+        }
+
+        // 遞迴依序掉球與打開
+        function dropAndRevealSequence(winnersList, index, overlay, drawBtn) {
+            // 所有球都處理完了
+            if (index >= winnersList.length) {
+                // 等待 2.5 秒讓大家看完結果，再收起動畫回到主畫面
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    updateMainUI(winnersList);
+                    drawBtn.disabled = false; // 解鎖按鈕
+                }, 2500);
+                return;
+            }
+
+            // 創造一顆球掉出來
+            const ball = document.createElement('div');
+            ball.className = 'lottery-ball';
+            document.getElementById('ballTrack').appendChild(ball);
+
+            // 等球掉到地上 (約 0.6秒) 後爆開
+            setTimeout(() => {
+                ball.classList.add('open');
+                ball.innerText = winnersList[index]; // 顯示名字
+                
+                // 停頓 1.2 秒讓大家歡呼，然後掉下一顆
+                setTimeout(() => {
+                    dropAndRevealSequence(winnersList, index + 1, overlay, drawBtn);
+                }, 1200);
+
+            }, 600);
+        }
+
+        // 把結果更新到背後的大螢幕
+        function updateMainUI(newWinners) {
             const winnerGrid = document.getElementById('winnerGrid');
             winnerGrid.innerHTML = "";
             document.getElementById('winnerArea').style.display = "block";
 
-            for (let i = 0; i < drawCount; i++) {
-                const randomIndex = Math.floor(Math.random() * eligiblePool.length);
-                const winnerName = eligiblePool.splice(randomIndex, 1)[0];
-                drawnWinners.push(winnerName);
-
+            // 顯示最新一輪的中獎者
+            newWinners.forEach(name => {
                 const wCard = document.createElement("div");
                 wCard.className = "winner-card";
-                wCard.innerText = winnerName;
+                wCard.innerText = name;
                 winnerGrid.appendChild(wCard);
 
-                if(cardElements[winnerName]) cardElements[winnerName].classList.add("drawn");
-            }
-        });
+                // 下方名單牆變暗
+                if(cardElements[name]) cardElements[name].classList.add("drawn");
+            });
+        }
 
         document.getElementById('resetBtn').addEventListener('click', function() {
             if(confirm("確定要清空『已中獎紀錄』嗎？")) {
