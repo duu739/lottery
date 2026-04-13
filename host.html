@@ -54,7 +54,7 @@
         #winnerArea { min-height: 150px; margin-bottom: 40px; text-align: center; display: none; }
         #winnerArea h2 { color: var(--c-beige); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 0 10px rgba(234, 210, 182, 0.4); }
         #winnerGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-        .winner-card { background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%); color: white; padding: 20px 40px; font-size: 2.5rem; font-weight: bold; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 25px var(--c-red-shade); animation: zoomIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .winner-card { background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%); color: white; padding: 20px 40px; font-size: 2.5rem; font-weight: bold; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 25px var(--c-red-shade); animation: zoomIn 0.6s forwards; }
         
         .section-title { border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 20px; color: var(--c-blue); }
         #nameGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
@@ -63,68 +63,67 @@
 
         @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.1) translateY(-50px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
 
-        /* ✨✨✨ 抽獎機過場動畫特效區 ✨✨✨ */
-        #lotteryOverlay {
+        /* ✨✨✨ 數位老虎機動畫特效區 ✨✨✨ */
+        #slotOverlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 52, 96, 0.95); /* 深藍綠色背景 */
-            backdrop-filter: blur(5px); z-index: 9999;
+            background: rgba(31, 74, 96, 0.95);
+            backdrop-filter: blur(8px); z-index: 9999;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* 模擬八角形的抽獎箱 */
-        .cage-container { position: relative; width: 250px; height: 250px; margin-bottom: 60px; }
-        .cage {
-            width: 100%; height: 100%; border: 12px solid var(--c-beige);
-            border-radius: 20px; /* 稍微圓角的方框模擬立體感 */
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 0 30px rgba(234, 210, 182, 0.3);
-            position: relative; overflow: hidden;
-        }
-        
-        /* 抽獎箱內部的十字線條 */
-        .cage::before, .cage::after { content: ''; position: absolute; background: var(--c-beige); opacity: 0.5; }
-        .cage::before { width: 4px; height: 100%; }
-        .cage::after { height: 4px; width: 100%; }
-
-        /* 旋轉動畫 */
-        .spinning .cage { animation: spinCage 0.4s linear infinite; }
-        @keyframes spinCage { 100% { transform: rotate(360deg); } }
-
-        /* 掉出來的球與軌道 */
-        .ball-track { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 80%; min-height: 80px; }
-        
-        .lottery-ball {
-            width: 60px; height: 60px; background: radial-gradient(circle at 30% 30%, #fff, var(--c-beige) 60%);
-            border-radius: 50%; box-shadow: 0 10px 15px rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: transparent; cursor: default;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: dropBall 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            opacity: 0; transform: translateY(-80px);
+        .slot-machine-container {
+            background: rgba(255, 255, 255, 0.03); padding: 30px; border-radius: 20px;
+            border: 2px solid var(--c-blue); box-shadow: 0 15px 40px rgba(0,0,0,0.6);
         }
 
-        /* 球體掉落 */
-        @keyframes dropBall { to { opacity: 1; transform: translateY(0); } }
+        .slot-window {
+            width: 400px; height: 120px;
+            background: rgba(0, 0, 0, 0.5); 
+            border-radius: 12px; border: 3px solid var(--c-teal-shade);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
 
-        /* 球體爆開變成名字卡片 */
-        .lottery-ball.open {
-            width: auto; min-width: 180px; height: 70px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%);
-            color: white; padding: 0 25px; font-size: 2rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 25px var(--c-red-shade);
+        #slotName {
+            font-size: 3.5rem; font-weight: bold; color: var(--c-beige);
+            text-shadow: 0 0 15px rgba(234, 210, 182, 0.4);
+            white-space: nowrap;
+        }
+
+        /* 移除模糊，改為清晰但帶有微弱跳動的動畫 (0.2秒節奏) */
+        .spinning-text { 
+            animation: tickFlip 0.2s infinite ease-in-out; 
+        }
+        @keyframes tickFlip { 
+            0% { transform: translateY(2px) scale(0.98); color: var(--c-blue); opacity: 0.8; } 
+            50% { transform: translateY(-2px) scale(1.02); color: var(--c-beige); opacity: 1; } 
+            100% { transform: translateY(2px) scale(0.98); color: var(--c-blue); opacity: 0.8; } 
+        }
+
+        /* 中獎定格時的爆紅放大特效 */
+        .winner-pop {
+            color: var(--c-red) !important;
+            text-shadow: 0 0 30px var(--c-red-shade) !important;
+            animation: popScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popScale { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1.2); opacity: 1; } }
+
+        #slotCountLabel {
+            margin-bottom: 20px; font-size: 1.5rem; color: var(--c-beige); font-weight: bold;
+            letter-spacing: 2px; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <div id="lotteryOverlay">
-        <h2 style="color: var(--c-beige); font-size: 2rem; margin-bottom: 30px;">幸運之輪轉動中...</h2>
-        <div class="cage-container" id="cageMachine">
-            <div class="cage"></div>
-        </div>
-        <div class="ball-track" id="ballTrack">
+    <div id="slotOverlay">
+        <div id="slotCountLabel">幸運輪盤載入中...</div>
+        <div class="slot-machine-container">
+            <div class="slot-window">
+                <div id="slotName">???</div>
             </div>
+        </div>
     </div>
 
     <div id="setupScreen">
@@ -184,14 +183,16 @@
             messagingSenderId: "424550291907",
             appId: "1:424550291907:web:d53de4e7b528a0d3d80576"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         let currentRoom = "";
         let participantsData = []; 
         let drawnWinners = [];     
-        let cardElements = {};     
+        let cardElements = {};   
+        
+        // ✨ 全域變數：紀錄動畫輪播到名單的哪個人了，確保不會每次都從頭滾
+        let animationDisplayIndex = 0;  
 
         const urlParams = new URLSearchParams(window.location.search);
         const roomFromUrl = urlParams.get('room');
@@ -240,7 +241,7 @@
             });
         }
 
-        // --- 動畫與抽獎核心邏輯 ---
+        // --- 老虎機動畫核心邏輯 ---
         document.getElementById('drawBtn').addEventListener('click', function() {
             const drawCount = parseInt(document.getElementById('drawCount').value);
             const eligiblePool = participantsData.filter(name => !drawnWinners.includes(name));
@@ -248,7 +249,9 @@
             if (eligiblePool.length === 0) return alert("所有人都已經被抽中過囉！");
             if (drawCount > eligiblePool.length) return alert(`目前只剩下 ${eligiblePool.length} 人符合資格！`);
 
-            // 1. 決定中獎名單
+            // 複製一份作為畫面上輪播用 (包含尚未被抽走的人)
+            const displayPool = [...eligiblePool];
+
             let currentWinners = [];
             for (let i = 0; i < drawCount; i++) {
                 const randomIndex = Math.floor(Math.random() * eligiblePool.length);
@@ -257,79 +260,79 @@
                 drawnWinners.push(winnerName);
             }
 
-            // 2. 啟動抽獎機動畫
-            playLotteryAnimation(currentWinners);
+            playSlotAnimation(currentWinners, displayPool);
         });
 
-        // 處理動畫序列的函數
-        function playLotteryAnimation(winnersList) {
-            const overlay = document.getElementById('lotteryOverlay');
-            const machine = document.getElementById('cageMachine');
-            const track = document.getElementById('ballTrack');
+        function playSlotAnimation(winnersList, displayPool) {
+            const overlay = document.getElementById('slotOverlay');
+            const slotName = document.getElementById('slotName');
+            const label = document.getElementById('slotCountLabel');
             const drawBtn = document.getElementById('drawBtn');
 
-            // 鎖定按鈕避免重複點擊
             drawBtn.disabled = true;
-            
-            // 顯示過場動畫，並清空軌道
             overlay.style.display = 'flex';
-            track.innerHTML = ''; 
-            
-            // 讓箱子開始狂轉
-            machine.classList.add('spinning');
 
-            // 旋轉 3 秒後停止，開始掉球
-            setTimeout(() => {
-                machine.classList.remove('spinning');
-                dropAndRevealSequence(winnersList, 0, overlay, drawBtn);
-            }, 3000);
-        }
+            let currentWinnerIndex = 0;
 
-        // 遞迴依序掉球與打開
-        function dropAndRevealSequence(winnersList, index, overlay, drawBtn) {
-            // 所有球都處理完了
-            if (index >= winnersList.length) {
-                // 等待 2.5 秒讓大家看完結果，再收起動畫回到主畫面
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                    updateMainUI(winnersList);
-                    drawBtn.disabled = false; // 解鎖按鈕
-                }, 2500);
-                return;
+            function spinForOneWinner() {
+                if (currentWinnerIndex >= winnersList.length) {
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        updateMainUI(winnersList);
+                        drawBtn.disabled = false;
+                    }, 1500);
+                    return;
+                }
+
+                if (winnersList.length > 1) {
+                    label.innerText = `🎰 正在抽出第 ${currentWinnerIndex + 1} 位幸運兒...`;
+                } else {
+                    label.innerText = `🎰 幸運輪盤轉動中...`;
+                }
+
+                slotName.className = 'spinning-text';
+                
+                let spinCount = 0;
+                const maxSpins = 25; // 轉 5 秒 (25次 * 0.2秒)
+
+                // 🌟 改為每 200 毫秒 (0.2秒) 切換一次，且按順序接續顯示
+                let spinInterval = setInterval(() => {
+                    const currentShowName = displayPool[animationDisplayIndex % displayPool.length];
+                    slotName.innerText = currentShowName;
+                    
+                    // 索引加一，下一次輪播就會接續下一個人
+                    animationDisplayIndex++;
+                    spinCount++;
+
+                    // 達到 5 秒後停止
+                    if (spinCount >= maxSpins) {
+                        clearInterval(spinInterval); 
+                        
+                        slotName.className = 'winner-pop';
+                        slotName.innerText = winnersList[currentWinnerIndex]; 
+
+                        setTimeout(() => {
+                            currentWinnerIndex++;
+                            spinForOneWinner();
+                        }, 1500);
+                    }
+                }, 200); // <-- 0.2 秒的清晰節奏
             }
 
-            // 創造一顆球掉出來
-            const ball = document.createElement('div');
-            ball.className = 'lottery-ball';
-            document.getElementById('ballTrack').appendChild(ball);
-
-            // 等球掉到地上 (約 0.6秒) 後爆開
-            setTimeout(() => {
-                ball.classList.add('open');
-                ball.innerText = winnersList[index]; // 顯示名字
-                
-                // 停頓 1.2 秒讓大家歡呼，然後掉下一顆
-                setTimeout(() => {
-                    dropAndRevealSequence(winnersList, index + 1, overlay, drawBtn);
-                }, 1200);
-
-            }, 600);
+            spinForOneWinner();
         }
 
-        // 把結果更新到背後的大螢幕
         function updateMainUI(newWinners) {
             const winnerGrid = document.getElementById('winnerGrid');
             winnerGrid.innerHTML = "";
             document.getElementById('winnerArea').style.display = "block";
 
-            // 顯示最新一輪的中獎者
             newWinners.forEach(name => {
                 const wCard = document.createElement("div");
                 wCard.className = "winner-card";
                 wCard.innerText = name;
                 winnerGrid.appendChild(wCard);
 
-                // 下方名單牆變暗
                 if(cardElements[name]) cardElements[name].classList.add("drawn");
             });
         }
