@@ -63,7 +63,6 @@
         
         #message { margin-top: 20px; font-weight: bold; font-size: 1.1rem; min-height: 24px; }
         .success-text { color: var(--c-beige); } 
-        /* 錯誤訊息使用專屬紅色 */
         .error-text { color: var(--c-red); }
     </style>
 </head>
@@ -84,7 +83,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // ⚠️⚠️⚠️ 請在此替換成你的 firebaseConfig ⚠️⚠️⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyAFDgexiZg7b3V99OKD8kMN-AX0VnE3Zbk",
             authDomain: "lottery-cd2d6.firebaseapp.com",
@@ -106,24 +104,10 @@
         const urlParams = new URLSearchParams(window.location.search);
         let roomFromUrl = urlParams.get('room');
 
+        // 如果網址有自帶代碼，填入並鎖定，不再檢查 localStorage
         if (roomFromUrl) {
             roomInput.value = roomFromUrl;
             roomInput.readOnly = true;
-            checkIfAlreadyJoined(roomFromUrl);
-        } else {
-            roomInput.addEventListener('blur', () => {
-                if(roomInput.value.trim()) checkIfAlreadyJoined(roomInput.value.trim());
-            });
-        }
-
-        function checkIfAlreadyJoined(roomCode) {
-            if (localStorage.getItem(`joined_${roomCode}`) === "true") {
-                roomInput.style.display = "none";
-                nameInput.style.display = "none";
-                submitBtn.style.display = "none";
-                messageEl.innerText = "✅ 您已經在此活動報名成功囉！";
-                messageEl.className = "success-text";
-            }
         }
 
         submitBtn.addEventListener('click', function() {
@@ -158,12 +142,13 @@
                         name: name,
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     }).then(() => {
-                        messageEl.innerText = "✅ 報名成功！請看大螢幕！";
+                        // ✨ 這裡改變了：不隱藏輸入框，只清空名字欄位，方便代填下一個
+                        messageEl.innerText = `✅ 「${name}」報名成功！可繼續填寫下一位。`;
                         messageEl.className = "success-text";
-                        roomInput.style.display = "none";
-                        nameInput.style.display = "none"; 
-                        submitBtn.style.display = "none"; 
-                        localStorage.setItem(`joined_${roomCode}`, "true");
+                        nameInput.value = ""; // 清空名字輸入框
+                        submitBtn.disabled = false; // 恢復按鈕可點擊
+                        submitBtn.innerText = "送出報名";
+                        // 移除 localStorage 的寫入限制
                     }).catch((error) => {
                         messageEl.innerText = "❌ 發生錯誤，請稍後再試";
                         messageEl.className = "error-text";
