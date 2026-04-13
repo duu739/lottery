@@ -53,8 +53,10 @@
         
         #winnerArea { min-height: 150px; margin-bottom: 40px; text-align: center; display: none; }
         #winnerArea h2 { color: var(--c-beige); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 0 10px rgba(234, 210, 182, 0.4); }
+        /* 下方名單牆變灰色，表示已中獎 */
+        .name-card.drawn { opacity: 0.2; filter: grayscale(100%); }
+        
         #winnerGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
-        .winner-card { background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%); color: white; padding: 20px 40px; font-size: 2.5rem; font-weight: bold; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 25px var(--c-red-shade); animation: zoomIn 0.6s forwards; }
         
         .section-title { border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 20px; color: var(--c-blue); }
         #nameGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
@@ -71,72 +73,75 @@
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        #slotCountLabel {
+        /* 👑 ✨ 新增：上方保留中獎者的展示區 ✨ */
+        #slotRealtimeWinnerArea {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-bottom: 30px; max-width: 90%;
+        }
+        #slotRealtimeWinnerTag {
             margin-bottom: 15px; font-size: 1.5rem; color: var(--c-beige); font-weight: bold;
             letter-spacing: 2px; text-transform: uppercase;
+            background: linear-gradient(90deg, transparent, rgba(234, 210, 182, 0.1), transparent);
+            padding: 10px 20px; border-radius: 20px;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-
-        /* 👑 新增：上方保留中獎者的展示區 */
-        #slotCurrentWinners {
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
-            margin-bottom: 30px; min-height: 70px; max-width: 90%;
-        }
-        
-        /* 縮小版的中獎卡片，疊在老虎機上方 */
-        .slot-mini-winner {
-            background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%);
-            color: white; padding: 10px 25px; font-size: 1.8rem; font-weight: bold;
-            border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.4), 0 0 15px var(--c-red-shade);
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        .slot-machine-container {
+        #slotRealtimeWinnerFrame {
             background: rgba(255, 255, 255, 0.03); padding: 30px; border-radius: 20px;
             border: 2px solid var(--c-blue); box-shadow: 0 15px 40px rgba(0,0,0,0.6);
         }
-
-        .slot-window {
+        #slotRealtimeWinnerArea .slot-window {
             width: 400px; height: 120px;
-            background: rgba(0, 0, 0, 0.5); 
+            background: rgba(0, 0, 0, 0.5); /* 內凹深色視窗 */
             border-radius: 12px; border: 3px solid var(--c-teal-shade);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
             display: flex; align-items: center; justify-content: center;
             overflow: hidden; position: relative;
         }
-
         #slotName {
             font-size: 3.5rem; font-weight: bold; color: var(--c-beige);
             text-shadow: 0 0 15px rgba(234, 210, 182, 0.4);
             white-space: nowrap;
         }
 
-        .spinning-text { animation: tickFlip 0.2s infinite ease-in-out; }
+        /* 清晰但帶有微弱跳動的動畫 (0.2秒節奏)，改在上方框框進行 */
+        #slotRealtimeWinnerArea .spinning-text { 
+            animation: tickFlip 0.2s infinite ease-in-out; 
+        }
         @keyframes tickFlip { 
             0% { transform: translateY(2px) scale(0.98); color: var(--c-blue); opacity: 0.8; } 
             50% { transform: translateY(-2px) scale(1.02); color: var(--c-beige); opacity: 1; } 
             100% { transform: translateY(2px) scale(0.98); color: var(--c-blue); opacity: 0.8; } 
         }
 
-        .winner-pop {
-            color: var(--c-red) !important; text-shadow: 0 0 30px var(--c-red-shade) !important;
+        /* 中獎定格時的爆紅放大特效，改在上方框框進行 */
+        #slotRealtimeWinnerArea .winner-pop {
+            color: var(--c-red) !important;
+            text-shadow: 0 0 30px var(--c-red-shade) !important;
             animation: popScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes popScale { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1.2); opacity: 1; } }
-        @keyframes popIn { 0% { opacity: 0; transform: translateY(20px) scale(0.8); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
+        /* 更新過場動畫佈局 */
+        #dashboardScreen, #lotteryOverlay, #slotOverlay { display: none; flex-direction: column; }
+        
+        #slotCountLabel {
+            margin-bottom: 20px; font-size: 1.5rem; color: var(--c-beige); font-weight: bold;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
     <div id="slotOverlay">
-        <div id="slotCountLabel">幸運輪盤載入中...</div>
-        <div id="slotCurrentWinners"></div>
-        
-        <div class="slot-machine-container">
-            <div class="slot-window">
-                <div id="slotName">???</div>
+        <div id="slotRealtimeWinnerArea">
+            <div id="slotRealtimeWinnerTag">🏆 即時中獎區 🏆</div>
+            <div id="slotRealtimeWinnerFrame">
+                <div class="slot-window">
+                    <div id="slotName">???</div>
+                </div>
             </div>
         </div>
+        <div id="slotCountLabel">幸運輪盤載入中...</div>
     </div>
 
     <div id="setupScreen">
@@ -280,23 +285,23 @@
             const slotName = document.getElementById('slotName');
             const label = document.getElementById('slotCountLabel');
             const drawBtn = document.getElementById('drawBtn');
-            const currentWinnersContainer = document.getElementById('slotCurrentWinners');
+            const realtimeWinnersContainer = document.getElementById('slotRealtimeWinners');
 
             drawBtn.disabled = true;
             overlay.style.display = 'flex';
-            currentWinnersContainer.innerHTML = ''; // 清空上一次動畫的保留區
+            // ✨ 取消了抽出多個小卡片在下方顯示的邏輯 ✨
 
             let currentWinnerIndex = 0;
 
             function spinForOneWinner() {
                 if (currentWinnerIndex >= winnersList.length) {
                     label.innerText = `🎉 恭喜以上幸運兒！`; // 全部抽完改標題
-                    // 抽完最後一個，畫面多停留 2.5 秒，讓大家看完所有卡片再收合
+                    // 抽完最後一個，畫面多停留 1.5 秒直接收合
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         updateMainUI(winnersList);
                         drawBtn.disabled = false;
-                    }, 2500);
+                    }, 1500); 
                     return;
                 }
 
@@ -306,60 +311,49 @@
                     label.innerText = `🎰 幸運輪盤轉動中...`;
                 }
 
+                // ✨ 在上方的框框進行滾動 ✨
                 slotName.className = 'spinning-text';
-                slotName.innerText = "???"; // 視窗先歸零一下，視覺效果比較好
                 
                 let spinCount = 0;
-                const maxSpins = 25; 
+                const maxSpins = 25; // 轉 5 秒 (25次 * 0.2秒)
 
+                // 每 200 毫秒 (0.2秒) 切換一次，且按順序接續顯示
                 let spinInterval = setInterval(() => {
                     const currentShowName = displayPool[animationDisplayIndex % displayPool.length];
                     slotName.innerText = currentShowName;
                     
+                    // 索引加一，下一次輪播就會接續下一個人
                     animationDisplayIndex++;
                     spinCount++;
 
+                    // 達到 5 秒後停止
                     if (spinCount >= maxSpins) {
-                        clearInterval(spinInterval); 
+                        clearInterval(spinInterval); // 停止轉動
                         
-                        // 中獎爆紅特效
+                        // ✨ 在上方的框框中獎爆紅特效 ✨
                         slotName.className = 'winner-pop';
-                        slotName.innerText = winnersList[currentWinnerIndex]; 
+                        slotName.innerText = winnersList[currentWinnerIndex]; // 顯示真正的得獎者
 
-                        // 讓紅色大字停留 1.5 秒讓大家歡呼
+                        // 定格 1.5 秒讓大家歡呼，然後進入下一個人的抽獎 (或結束)
                         setTimeout(() => {
-                            // ✨ 把這個中獎人複製一張小卡，推上去保留區 ✨
-                            const miniCard = document.createElement("div");
-                            miniCard.className = "slot-mini-winner";
-                            miniCard.innerText = winnersList[currentWinnerIndex];
-                            currentWinnersContainer.appendChild(miniCard);
-                            
                             currentWinnerIndex++;
-                            
-                            // 稍微停頓 0.5 秒再接續抽下一個，節奏比較不會太趕
-                            setTimeout(() => {
-                                spinForOneWinner();
-                            }, 500);
-                            
+                            spinForOneWinner();
                         }, 1500);
                     }
-                }, 200); 
+                }, 200); // <-- 0.2 秒的清晰節奏
             }
 
+            // 啟動遞迴迴圈
             spinForOneWinner();
         }
 
+        // 把結果更新到背後的大螢幕
         function updateMainUI(newWinners) {
-            const winnerGrid = document.getElementById('winnerGrid');
-            winnerGrid.innerHTML = "";
+            // ✨ 不需要再顯示最新一輪的中獎者卡片 ✨
             document.getElementById('winnerArea').style.display = "block";
 
+            // 下方名單牆變暗，表示已中獎
             newWinners.forEach(name => {
-                const wCard = document.createElement("div");
-                wCard.className = "winner-card";
-                wCard.innerText = name;
-                winnerGrid.appendChild(wCard);
-
                 if(cardElements[name]) cardElements[name].classList.add("drawn");
             });
         }
@@ -368,7 +362,6 @@
             if(confirm("確定要清空『已中獎紀錄』嗎？")) {
                 drawnWinners = [];
                 document.getElementById('winnerArea').style.display = "none";
-                document.getElementById('winnerGrid').innerHTML = "";
                 for (let key in cardElements) cardElements[key].classList.remove("drawn");
             }
         });
