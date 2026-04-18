@@ -51,7 +51,6 @@
         .draw-controls { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(112, 156, 181, 0.3); padding: 20px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 30px; }
         .draw-controls input { width: 80px; padding: 10px; font-size: 1.2rem; text-align: center; border-radius: 8px; border: 2px solid var(--c-blue); background: rgba(255,255,255,0.1); color: white; outline: none; }
         
-        /* 修正：主畫面的開獎區 */
         #winnerArea { min-height: 150px; margin-bottom: 40px; text-align: center; display: none; }
         #winnerArea h2 { color: var(--c-beige); font-size: 2rem; margin-bottom: 20px; text-shadow: 0 0 10px rgba(234, 210, 182, 0.4); }
         #winnerGrid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
@@ -59,12 +58,32 @@
         
         .section-title { border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 20px; color: var(--c-blue); }
         #nameGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .name-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(234, 210, 182, 0.2); border-radius: 8px; padding: 15px; text-align: center; font-size: 1.2rem; transition: opacity 0.5s; }
-        .name-card.drawn { opacity: 0.2; filter: grayscale(100%); }
+        
+        /* ✨ 升級：卡片變成可以點擊的樣式 ✨ */
+        .name-card { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(234, 210, 182, 0.2); 
+            border-radius: 8px; padding: 15px; text-align: center; 
+            font-size: 1.2rem; transition: opacity 0.5s; 
+            cursor: pointer; position: relative; overflow: hidden;
+        }
+        
+        /* ✨ 升級：滑鼠移上去的「踢出」遮罩 ✨ */
+        .name-card:hover::after {
+            content: '🗑️ 點擊踢出';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(240, 92, 93, 0.9); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1rem;
+            animation: fadeIn 0.2s forwards;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .name-card.drawn { opacity: 0.2; filter: grayscale(100%); pointer-events: none; }
 
         @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.1) translateY(-50px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
 
-        /* ✨✨✨ 數位老虎機過場動畫區 ✨✨✨ */
+        /* --- 數位老虎機過場動畫區 --- */
         #slotOverlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(31, 74, 96, 0.95);
@@ -72,7 +91,6 @@
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* 👑 修正：上方即時開獎保留區 (帶有精緻框線) */
         #slotRealtimeWinnerArea {
             width: 80%; max-width: 800px; min-height: 120px;
             margin-bottom: 40px; padding: 20px;
@@ -82,18 +100,16 @@
         }
 
         #slotRealtimeWinnerTag {
-            margin-top: -35px; /* 讓標籤浮在框線上方 */
+            margin-top: -35px;
             margin-bottom: 20px; font-size: 1.5rem; color: var(--c-teal-shade); font-weight: bold;
             background: var(--c-beige); padding: 5px 20px; border-radius: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        /* 存放小卡片的容器 */
         #slotAccumulatedWinners {
             display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; width: 100%;
         }
         
-        /* 縮小版的中獎卡片 */
         .slot-mini-winner {
             background: linear-gradient(135deg, var(--c-red-tint) 0%, var(--c-red) 100%);
             color: white; padding: 10px 25px; font-size: 1.8rem; font-weight: bold;
@@ -106,7 +122,6 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* 老虎機本體 */
         .slot-machine-container {
             background: rgba(255, 255, 255, 0.03); padding: 30px; border-radius: 20px;
             border: 2px solid var(--c-blue); box-shadow: 0 15px 40px rgba(0,0,0,0.6);
@@ -146,12 +161,10 @@
 <body>
 
     <div id="slotOverlay">
-        
         <div id="slotRealtimeWinnerArea">
-            <div id="slotRealtimeWinnerTag">🏆 即時中獎名單 🏆</div>
+            <div id="slotRealtimeWinnerTag">🏆 即時開獎保留區 🏆</div>
             <div id="slotAccumulatedWinners"></div>
         </div>
-
         <div id="slotCountLabel">幸運輪盤載入中...</div>
         <div class="slot-machine-container">
             <div class="slot-window">
@@ -207,7 +220,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // ⚠️⚠️⚠️ 請在此替換成你的 firebaseConfig ⚠️⚠️⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyAFDgexiZg7b3V99OKD8kMN-AX0VnE3Zbk",
             authDomain: "lottery-cd2d6.firebaseapp.com",
@@ -222,9 +234,9 @@
         const db = firebase.database();
 
         let currentRoom = "";
-        let participantsData = []; 
+        let participantsData = []; // 現在裡面會存物件 [{key: '...', name: '...'}, ...]
         let drawnWinners = [];     
-        let cardElements = {};   
+        let cardElements = {};     // 改為用 Firebase Key 綁定卡片，確保同名不會出錯
         
         let animationDisplayIndex = 0;  
 
@@ -257,38 +269,57 @@
 
             const eventRef = db.ref(`events/${currentRoom}/participants`);
 
+            // ✨ 修改：資料結構改為包含 key，以完美處理重複名字
             eventRef.on("child_added", function(snapshot) {
                 const name = snapshot.val().name;
-                participantsData.push(name);
+                const key = snapshot.key;
+
+                participantsData.push({ key: key, name: name });
                 document.getElementById('totalCount').innerText = participantsData.length;
 
                 const card = document.createElement("div");
                 card.className = "name-card";
                 card.innerText = name;
-                cardElements[name] = card; 
+                
+                // ✨ 新增：點擊卡片直接從資料庫刪除
+                card.onclick = function() {
+                    if(confirm(`確定要將「${name}」從名單中踢除嗎？\n這將永遠刪除該筆報名紀錄！`)) {
+                        db.ref(`events/${currentRoom}/participants/${key}`).remove();
+                    }
+                };
+
+                cardElements[key] = card; 
                 document.getElementById('nameGrid').appendChild(card);
             });
             
+            // ✨ 修改：監聽刪除事件，即時移除畫面卡片與陣列資料
             eventRef.on("child_removed", function(snapshot) {
-                const name = snapshot.val().name;
-                if(cardElements[name]) { cardElements[name].remove(); delete cardElements[name]; }
+                const key = snapshot.key;
+                if(cardElements[key]) { 
+                    cardElements[key].remove(); 
+                    delete cardElements[key]; 
+                }
+                participantsData = participantsData.filter(p => p.key !== key);
+                document.getElementById('totalCount').innerText = participantsData.length;
             });
         }
 
         // --- 老虎機動畫核心邏輯 ---
         document.getElementById('drawBtn').addEventListener('click', function() {
             const drawCount = parseInt(document.getElementById('drawCount').value);
-            const eligiblePool = participantsData.filter(name => !drawnWinners.includes(name));
+            // 改為比對物件裡面的 name
+            const eligiblePool = participantsData.filter(p => !drawnWinners.includes(p.name));
 
             if (eligiblePool.length === 0) return alert("所有人都已經被抽中過囉！");
             if (drawCount > eligiblePool.length) return alert(`目前只剩下 ${eligiblePool.length} 人符合資格！`);
 
-            const displayPool = [...eligiblePool];
+            // 只取名字陣列來做動畫輪播
+            const displayPool = eligiblePool.map(p => p.name);
 
             let currentWinners = [];
             for (let i = 0; i < drawCount; i++) {
                 const randomIndex = Math.floor(Math.random() * eligiblePool.length);
-                const winnerName = eligiblePool.splice(randomIndex, 1)[0];
+                const winnerName = eligiblePool.splice(randomIndex, 1)[0].name;
                 currentWinners.push(winnerName);
                 drawnWinners.push(winnerName);
             }
@@ -305,8 +336,6 @@
 
             drawBtn.disabled = true;
             overlay.style.display = 'flex';
-            
-            // 每次抽獎前清空保留區
             accumulatedContainer.innerHTML = ''; 
 
             let currentWinnerIndex = 0;
@@ -316,7 +345,6 @@
                     label.innerText = `🎉 恭喜以上幸運兒！`; 
                     setTimeout(() => {
                         overlay.style.display = 'none';
-                        // 修正：呼叫更新主畫面 UI 的函數
                         updateMainUI(winnersList);
                         drawBtn.disabled = false;
                     }, 2500);
@@ -349,17 +377,13 @@
                         slotName.innerText = winnersList[currentWinnerIndex]; 
 
                         setTimeout(() => {
-                            // ✨ 修正：把這個中獎人複製一張小卡，推上去保留區 ✨
                             const miniCard = document.createElement("div");
                             miniCard.className = "slot-mini-winner";
                             miniCard.innerText = winnersList[currentWinnerIndex];
                             accumulatedContainer.appendChild(miniCard);
                             
                             currentWinnerIndex++;
-                            
-                            setTimeout(() => {
-                                spinForOneWinner();
-                            }, 500);
+                            setTimeout(() => spinForOneWinner(), 500);
                             
                         }, 1500);
                     }
@@ -369,22 +393,23 @@
             spinForOneWinner();
         }
 
-        // ✨ 修正：完整還原主畫面的 UI 更新邏輯 ✨
         function updateMainUI(newWinners) {
             const winnerGrid = document.getElementById('winnerGrid');
-            // 清空上一輪的主畫面開獎卡片，放上最新這輪的
             winnerGrid.innerHTML = "";
             document.getElementById('winnerArea').style.display = "block";
 
             newWinners.forEach(name => {
-                // 建立巨大的紅色中獎卡片
                 const wCard = document.createElement("div");
                 wCard.className = "winner-card";
                 wCard.innerText = name;
                 winnerGrid.appendChild(wCard);
 
-                // 讓下方的名單牆變暗
-                if(cardElements[name]) cardElements[name].classList.add("drawn");
+                // ✨ 修正：因為 cardElements 的 Key 現在是 Firebase ID，所以改用遍歷比對文字來變暗
+                Object.values(cardElements).forEach(card => {
+                    if (card.innerText === name) {
+                        card.classList.add("drawn");
+                    }
+                });
             });
         }
 
@@ -393,14 +418,16 @@
                 drawnWinners = [];
                 document.getElementById('winnerArea').style.display = "none";
                 document.getElementById('winnerGrid').innerHTML = "";
-                for (let key in cardElements) cardElements[key].classList.remove("drawn");
+                // 恢復所有變暗的卡片
+                Object.values(cardElements).forEach(card => card.classList.remove("drawn"));
             }
         });
 
         function exportToCSV() {
             if (participantsData.length === 0) return alert("目前還沒有人報名喔！");
             let csvContent = "\uFEFF報名序號,姓名\n"; 
-            participantsData.forEach((name, index) => csvContent += `${index + 1},${name}\n`);
+            // 從物件陣列中取出 name
+            participantsData.forEach((p, index) => csvContent += `${index + 1},${p.name}\n`);
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
